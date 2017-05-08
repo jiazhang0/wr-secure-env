@@ -1,18 +1,3 @@
-[submodule "meta-signing-key"]
-	path = meta-signing-key
-	url = https://github.com/jiazhang0/meta-signing-key.git
-[submodule "meta-efi-secure-boot"]
-	path = meta-efi-secure-boot
-	url = https://github.com/jiazhang0/meta-efi-secure-boot.git
-[submodule "meta-integrity"]
-	path = meta-integrity
-	url = https://github.com/jiazhang0/meta-integrity.git
-[submodule "meta-encrypted-storage"]
-	path = meta-encrypted-storage
-	url = https://github.com/jiazhang0/meta-encrypted-storage.git
-[submodule "meta-rpm-signing"]
-	path = meta-rpm-signing
-	url = https://github.com/jiazhang0/meta-rpm-signing.git
 [submodule "meta-tpm2"]
 	path = meta-tpm2
 	url = https://github.com/jiazhang0/meta-tpm2.git
