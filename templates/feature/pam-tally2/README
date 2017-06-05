@@ -1,0 +1,7 @@
+pam-tally2
+==========
+
+The pam_tally2 PAM module maintains a count of attempted accesses, can reset
+count on success, can deny access if too many attempts fail.
+
+Template pam-tally2 enable pam_tally2 PAM module by default.
