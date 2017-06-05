@@ -1,12 +1,11 @@
-
 -------------------
   README
 -------------------
 
 Feature's Description
 ===================
-openssl contains some weak encryption, this feature disables some of them with
-below configuration of openssl_1.0.2d:
+openssl contains some weak ciphers, this feature disables some of them with
+below configuration of openssl_1.0.2j:
 
 EXTRA_OECONF_class-target +="no-des no-md2 no-ec no-ecdh no-ecdsa no-mdc2 "
 EXTRA_OECONF_class-nativesdk +="no-md2 no-ec no-ecdh no-ecdsa no-mdc2 "
@@ -15,7 +14,7 @@ EXTRA_OECONF_class-nativesdk +="no-md2 no-ec no-ecdh no-ecdsa no-mdc2 "
 Configuration
 ===================
 To enable this feature, you just need to add:
---with-layer=meta-secure-env --with-template=feature/disable-weak-encryption
+--with-layer=meta-secure-env --with-template=feature/openssl-no-weak-ciphers
 
 
 Important notes
