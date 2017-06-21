@@ -79,8 +79,7 @@ read_args
 [ -z "$INIT" ] && INIT="/sbin/init"
 
 
-udevadm settle --timeout=3 --quiet
-killall "${_UDEV_DAEMON##*/}" 2>/dev/null
+udevadm settle --timeout=3
 
 mkdir -p $ROOT_MOUNT/
 
@@ -92,7 +91,7 @@ try_to_mount_rootfs() {
     mount -o $mount_flags "${ROOT_DEVICE}" "${ROOT_MOUNT}" 2>/dev/null && return 0
 
     [ -x /init.cryptfs ] &&
-        /init.cryptfs "${ROOT_MOUNT}" "${ROOT_DEVICE}" $mount_flags "OVERCROOTFS" && return 0
+        /init.cryptfs "${ROOT_MOUNT}" "${ROOT_DEVICE}" $mount_flags "ROOTFS" && return 0
 
     return 1
 }
@@ -131,5 +130,6 @@ fi
     switch_root="switch_root"
 }
 
+killall "${_UDEV_DAEMON##*/}" 2>/dev/null
 exec $switch_root $ROOT_MOUNT $INIT $CMDLINE ||
     fatal "Couldn't switch_root, dropping to shell"
