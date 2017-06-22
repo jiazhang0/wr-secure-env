@@ -2,16 +2,13 @@
 This layer provides the following common and platform-specific security
 features:
 
-#### UEFI Secure Boot
+#### UEFI & MOK Secure Boot
 For x86 platform, UEFI secure boot is the industry standard defined in the
 UEFI spec, allowing images loaded by UEFI BIOS to be verified with the trusted
 key. Whenever this feature is enabled, the bootloader and kernel will be
 signed automatically during the build, implying the signed binaries are
 contained by the resulting RPM and rootfs image.
 
-Refer to [meta-efi-secure-boot](https://github.com/jiazhang0/meta-efi-secure-boot/blob/master/README.md) for more details.
-
-#### MOK Secure Boot
 For x86 platform, MOK secure boot is based on the UEFI secure boot, adding
 the shim loader to chainloader the second-stage bootloader. Meanwhile,
 the shim will also install a protocol which permits the second-stage bootloader
@@ -88,6 +85,10 @@ This feature provides the integrity verification for the RPM5 package.
 
 Refer to [meta-rpm-signing](https://github.com/jiazhang0/meta-rpm-signing/blob/master/README.md)
 for more details.
+
+#### Others
+
+Refer to ./templates/feature/<feature_name>/README for more details.
 
 ### Maintenance
 This layer is maintained in Wind River Open Source Labs at github.
