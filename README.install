@@ -1,0 +1,149 @@
+# Creating a Bootable USB Device
+
+## Create boot and rootfs partitions
+
+The fdisk utility will be used to create the partitions with the following characteristics:
+```
+USB Device Name: /dev/sdX
+
+Boot Partition:
+	Partition type: p (primary) W95 FAT32
+	Size: 250 MB
+	Partition number: 1
+	Bootable flag: Enabled
+
+Rootfs Partition:
+	Partition type: p (primary) Linux
+	Size: Remaining space
+	Partition number: 2
+	Bootable flag: None
+```
+
+The fdisk commands list for creating the partitions:
+```
+d
+1
+d
+2
+n
+p
+1
+
++256M
+n
+p
+2
+528384
+
+a
+1
+t
+1
+b
+t
+2
+83
+w
+p
+q
+```
+
+Format the new partitions with:
+```
+$ sudo mkfs.vfat -I -n BOOT /dev/sdX1
+$ sudo mkfs.ext4 -v -L ROOTFS /dev/sdX2
+```
+
+## Deploy boot stuffs and rootfs to USB device
+
+### [Optional] Signing rootfs with IMA private key
+
+This step is required only for an IMA feature enabled build.
+```
+# Extended file system attribute is required for IMA signing
+# This procedure verified on ext4 file system
+
+# Set up variables defining the paths to evmctl, getfattr, the rootfs
+# tarball, and the IMA private key
+$ evmctl=buildDir/tmp/sysroots/x86_64-linux/usr/sbin/evmctl
+$ getfattr=buildDir/tmp/sysroots/x86_64-linux/usr/bin/getfattr
+$ rootfs_tarball=buildDir/tmp/deploy/images/intel-x86-64/wrlinux-image-glibc-std-intel-x86-64.tar.bz2
+
+# For the private key, we use sample key in this example. Substitute
+# the correct file name for your key.
+$ ima_privkey=buildDir/../layers/meta-signing-key/files/ima_keys/ima_privkey.pem
+
+$ mkdir rootfs-ima
+$ tar --xattrs --xattrs-include=security\.ima -jxf $rootfs_tarball -C rootfs-ima
+$ sudo $evmctl ima_sign --hashalgo sha256 --rsa --key $ima_privkey -r -t f rootfs-ima
+
+# Verify the rooffs are signed correctly:
+$ cd rootfs-ima
+$ $getfattr ./usr/sbin/switch_root.static
+
+The output looks like:
+
+getfattr: Removing leading '/' from absolute path names
+# file: .../usr/sbin/switch_root.static
+security.ima=0sAwGUT0JZAAEbya2W6YKdkAEIACE9X7Cs6gDplotRWKfPueDJIbcVYI/J9Ra4FqrKyExmXeh9VNQEBIlq1YXxn1CFjU4Jn4+Fpui7CqiPFeWP/vmhGpcMPn2Jydxb+TUtu7wEhhwTEbKVIWyZBOB8kOPYJ2S6YHHFUkAb/rn6cVnGRf6IB2dQFURAe76mukbSgiKCLm87l6LKekaROB7Qf5Rx2dmjPHV/8R3JHS6KsQjSfFebWlqUBEvMR7E7+o3S6RkskSgICcqdirAQNXnHbwweNcYZ26Lz2Lge0rzRrfE9pbLRoYFINstmzjkrWi09525frE0QJDh2IdbKrc8N8qhBfe+oQfyPUcY9AkC6lHhPFDc=
+
+# Recreate tarball for signed rootfs
+$ sudo tar --xattrs --xattrs-include=security\.ima -cjf rootfs-ima-signed.tar.bz2 *
+```
+
+### Deploy boot stuffs and rootfs
+```
+$ rootfs_tarball=buildDir/tmp/deploy/images/intel-x86-64/wrlinux-image-glibc-std-intel-x86-64.tar.bz2
+
+Or signed IMA rootfs created from above steps:
+$ rootfs_tarball=/path/to/rootfs-ima-signed.tar.bz2
+
+$ mkdir ./boot
+$ mkdir ./rootfs
+
+$ sudo mount /dev/sdX1 ./boot
+$ suod mount /dev/sdX2 ./rootfs
+
+$ sudo tar -jxf $rootfs_tarball -C ./rootfs
+
+# Copy efi, kernel, initramfs to the boot partition of the USB device
+$ sudo cp -r ./rootfs/boot/efi/* ./boot
+$ sudo cp ./rootfs/boot/bzImage-4.8.22-WR9.0.0.7_standard ./boot/bzImage
+$ sudo cp ./rootfs/boot/wrlinux-image-initramfs-4.8.22-WR9.0.0.7_standard.cpio.gz ./boot/initrd
+
+# Modify the boot menu for booting rootfs from the USB device
+$ sudo sed -i -e 's;root=/dev/sda2;root=/dev/sdb2;g' ./boot/EFI/BOOT/boot-menu.inc
+
+$ sudo umount ./boot
+$ sudo umoutn ./rootfs
+```
+
+Note:
+- A bootable USB device will be created with above procedures.
+- The USB device could be used for IMA demonstration, or further deploy
+  the boot stuffs and rootfs to target disk.
+- The USB device is not applicable for Secure Boot demonstration since
+  the grub configs was changed but not singed again.
+
+# Deploy boot stuffs and rootfs to target disk
+
+## Boot target with the USB device
+
+1. Copy rootfs_tarball to the rootfs partition of the USB device.
+2. Insert the USB device to target, power on and boot from USB device.
+
+## Create boot and rootfs partitions on target disk
+
+Refer to the steps of creating boot and rootfs partitions on the USB device.
+
+## Deploy boot staffs and rootfs
+
+Refer to the steps of deploy boot staffs and rootfs on the USB device.
+
+Note:
+- Device name of target disk is `/dev/sda`.
+- Don't need to update the boot menu again.
+
+## Boot with target disk
+
+Unplug the USB device and reboot the target.
