@@ -3,3 +3,5 @@
 #
 
 feature/tpm2
+feature/initramfs
+feature/initramfs-install

@@ -2,4 +2,4 @@
 # Copyright (C) 2017 Wind River Systems, Inc.
 #
 
-feature/mok-secure-boot
+IMAGE_INSTALL += "packagegroup-ima"
