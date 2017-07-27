@@ -1,4 +1,4 @@
-### meta-secure-env
+### wr-secure-env
 This layer provides the following common and platform-specific security
 features:
 
@@ -75,8 +75,8 @@ Refer to ./templates/feature/<feature_name>/README for more details.
 ### Maintenance
 This layer is maintained in Wind River Open Source Labs at github.
 - source code  
-  https://github.com/WindRiver-OpenSourceLabs/meta-secure-env
+  https://github.com/WindRiver-OpenSourceLabs/wr-secure-env
 
-### Building the meta-secure-env layer
+### Building the wr-secure-env layer
 This layer should be added to the bblayers.conf file. To enable certain
 feature provided by this layer, add the feature to the local.conf file. 
