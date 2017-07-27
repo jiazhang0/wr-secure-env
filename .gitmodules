@@ -1,0 +1,3 @@
+[submodule "meta-secure-core"]
+	path = meta-secure-core
+	url = https://github.com/jiazhang0/meta-secure-core.git
