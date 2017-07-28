@@ -2,5 +2,6 @@
 # Copyright (C) 2017 Wind River Systems, Inc.
 #
 
-require recipes-kernel/linux/linux-yocto-encrypted-storage.inc
-require recipes-kernel/linux/linux-yocto-integrity.inc
+include recipes-kernel/linux/linux-yocto-efi-secure-boot.inc
+include recipes-kernel/linux/linux-yocto-encrypted-storage.inc
+include recipes-kernel/linux/linux-yocto-integrity.inc
