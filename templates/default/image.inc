@@ -3,4 +3,4 @@
 #
 
 # Install initramfs to rootfs
-IMAGE_INSTALL += "${@'kernel-initramfs-image' if d.getVar('INITRAMFS_IMAGE', True) else ''}"
+IMAGE_INSTALL += "${@'kernel-initramfs' if d.getVar('INITRAMFS_IMAGE', True) else ''}"
